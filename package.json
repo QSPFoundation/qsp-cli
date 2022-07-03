@@ -2,7 +2,10 @@
   "name": "@qsp/cli",
   "version": "0.9.0",
   "description": "CLI tools for QSP",
-  "main": "index.js",
+  "main": "cli.js",
+  "bin": {
+    "qsp-cli": "./bin/run"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
@@ -26,5 +29,8 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-node": "^11.1.0",
     "prettier": "2.7.1"
+  },
+  "dependencies": {
+    "vorpal": "^1.12.0"
   }
 }
