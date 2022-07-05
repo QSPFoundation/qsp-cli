@@ -11,23 +11,27 @@ const languageEncoding = require("detect-file-encoding-and-language");
 program.name("qsp-cli").description("CLI tools for QSP").version("1.0.0");
 
 program
-  .argument("<input-file>", "File to convert")
-  .argument("[output-directory]", "Path to save the converter file")
-  .option("--unicode");
+  .argument("<input-files>", "File(s) to convert - supports glob patterns")
+  .option("--directory <output-directory>", "Path to save the converted file")
+  .option("--unicode", "Save qsps files in utf16 encoding compatible with old txt2gam");
 
 program.parse();
 
-const [inputArg, outputDirectory] = program.args;
-const { unicode } = program.opts();
+const { unicode, directory: outputDirectory } = program.opts();
 
-const files = glob.sync(inputArg, { nodir: true });
+console.dir({ args: program.args, outputDirectory });
+
+const files = program.args.reduce(
+  (acc, pattern) => [...acc, ...glob.sync(pattern, { nodir: true })],
+  []
+);
 
 if (!files.length) {
   console.log("No matching files found");
   process.exit(1);
 }
 
-for (const file of files) {
+for (const file of new Set(files)) {
   converFile(file, outputDirectory, unicode);
 }
 
@@ -52,13 +56,13 @@ async function convertQspFile(filePath, outputDirectory, unicode) {
   const locations = readQsp(content.buffer);
   let converted = writeQsps(locations, os.EOL);
   if (unicode) {
-    const utf16buffer = Buffer.from(`\ufeff${converted}`, 'utf16le');
+    const utf16buffer = Buffer.from(`\ufeff${converted}`, "utf16le");
     converted = new Uint8Array(utf16buffer);
   }
 
   const outPath = await writeFile(filePath, outputDirectory, ".qsps", converted);
 
-  console.log(`Finished convertting ${filePath} -> ${outPath}`);
+  console.log(`Finished converting ${filePath} -> ${outPath}`);
 }
 
 async function convertQspsFile(filePath, outputDirectory) {
@@ -71,7 +75,7 @@ async function convertQspsFile(filePath, outputDirectory) {
 
   const outPath = await writeFile(filePath, outputDirectory, ".qsp", new Uint8Array(converted));
 
-  console.log(`Finished convertting ${filePath} -> ${outPath}`);
+  console.log(`Finished converting ${filePath} -> ${outPath}`);
 }
 
 async function writeFile(filePath, outputDirectory, outExtension, content) {
