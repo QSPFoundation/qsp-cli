@@ -12,11 +12,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
-    "release": "np"
+    "release": "np --no-tests"
   },
-  "homepage": "https://github.com/QSPFoundation/converters#readme",
+  "homepage": "https://github.com/QSPFoundation/qsp-cli#readme",
   "bugs": {
-    "url": "https://github.com/QSPFoundation/converters/issues"
+    "url": "https://github.com/QSPFoundation/qsp-cli/issues"
   },
   "repository": {
     "type": "git",
