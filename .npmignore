@@ -1,0 +1,7 @@
+.editorconfig
+.eslintignore
+.eslintrc.cjs
+.github/**/*
+.prettierignore
+.prettierrc.json
+.eslintrc.js
