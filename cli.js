@@ -19,8 +19,6 @@ program.parse();
 
 const { unicode, directory: outputDirectory } = program.opts();
 
-console.dir({ args: program.args, outputDirectory });
-
 const files = program.args.reduce(
   (acc, pattern) => [...acc, ...glob.sync(pattern, { nodir: true })],
   []
