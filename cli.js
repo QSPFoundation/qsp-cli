@@ -64,9 +64,12 @@ async function convertQspFile(filePath, outputDirectory, unicode) {
 }
 
 async function convertQspsFile(filePath, outputDirectory) {
-  const { encoding } = await languageEncoding(filePath);
+  let { encoding } = await languageEncoding(filePath);
   const data = await fs.readFile(path.resolve(filePath));
-  const decoder = new TextDecoder(encoding);
+  if (!encoding) {
+    encoding = data[1] === 0 ? 'utf-16le' : 'utf-8';
+  }
+  const decoder = new TextDecoder(encoding || 'utf-8');
   const content = decoder.decode(data);
   const locations = readQsps(content);
   const converted = writeQsp(locations);
