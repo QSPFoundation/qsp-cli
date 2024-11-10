@@ -1,5 +1,6 @@
 {
   "name": "@qsp/cli",
+  "type": "module",
   "version": "1.0.2",
   "description": "CLI tools for QSP",
   "main": "cli.js",
@@ -29,17 +30,20 @@
   "author": "Sergii Kostyrko <srg.kostyrko@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^8.19.0",
-    "eslint-config-prettier": "^8.5.0",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.14.0",
+    "eslint": "^9.14.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
-    "np": "^7.6.2",
-    "prettier": "2.7.1"
+    "globals": "^15.12.0",
+    "np": "^10.0.7",
+    "prettier": "^3.3.3"
   },
   "dependencies": {
     "@qsp/converters": "^1.0.1",
-    "commander": "^9.3.0",
-    "detect-file-encoding-and-language": "^2.2.2",
-    "glob": "^8.0.3"
+    "commander": "^12.1.0",
+    "detect-file-encoding-and-language": "^2.4.0",
+    "glob": "^11.0.0"
   },
   "publishConfig": {
     "access": "public"

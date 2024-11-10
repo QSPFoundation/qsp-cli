@@ -21,7 +21,7 @@ const { unicode, directory: outputDirectory } = program.opts();
 
 const files = program.args.reduce(
   (acc, pattern) => [...acc, ...glob.sync(pattern, { nodir: true })],
-  []
+  [],
 );
 
 if (!files.length) {
@@ -67,9 +67,9 @@ async function convertQspsFile(filePath, outputDirectory) {
   let { encoding } = await languageEncoding(filePath);
   const data = await fs.readFile(path.resolve(filePath));
   if (!encoding) {
-    encoding = data[1] === 0 ? 'utf-16le' : 'utf-8';
+    encoding = data[1] === 0 ? "utf-16le" : "utf-8";
   }
-  const decoder = new TextDecoder(encoding || 'utf-8');
+  const decoder = new TextDecoder(encoding || "utf-8");
   const content = decoder.decode(data);
   const locations = readQsps(content);
   const converted = writeQsp(locations);
