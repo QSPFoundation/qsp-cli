@@ -1,12 +1,12 @@
 /* eslint-disable no-process-exit */
-const { program } = require("commander");
-const glob = require("glob");
-const path = require("path");
-const fs = require("fs/promises");
-const os = require("os");
-const { readQsp, readQsps, writeQsp, writeQsps } = require("@qsp/converters");
-const { TextDecoder } = require("util");
-const languageEncoding = require("detect-file-encoding-and-language");
+import { program } from "commander";
+import { sync } from "glob";
+import { extname, resolve, basename as _basename, dirname, relative } from "path";
+import { readFile, mkdir, writeFile as _writeFile } from "fs/promises";
+import { EOL } from "os";
+import { readQsp, readQsps, writeQsp, writeQsps } from "@qsp/converters";
+import { TextDecoder } from "util";
+import languageEncoding from "detect-file-encoding-and-language";
 
 program.name("qsp-cli").description("CLI tools for QSP").version("1.0.0");
 
@@ -20,7 +20,7 @@ program.parse();
 const { unicode, directory: outputDirectory } = program.opts();
 
 const files = program.args.reduce(
-  (acc, pattern) => [...acc, ...glob.sync(pattern, { nodir: true })],
+  (acc, pattern) => [...acc, ...sync(pattern, { nodir: true })],
   [],
 );
 
@@ -34,7 +34,7 @@ for (const file of new Set(files)) {
 }
 
 function converFile(filePath, outputDirectory, unicode) {
-  const ext = path.extname(filePath).toLowerCase();
+  const ext = extname(filePath).toLowerCase();
   switch (ext) {
     case ".qsp":
     case ".gam":
@@ -50,9 +50,9 @@ function converFile(filePath, outputDirectory, unicode) {
 }
 
 async function convertQspFile(filePath, outputDirectory, unicode) {
-  const content = await fs.readFile(path.resolve(filePath));
+  const content = await readFile(resolve(filePath));
   const locations = readQsp(content.buffer);
-  let converted = writeQsps(locations, os.EOL);
+  let converted = writeQsps(locations, EOL);
   if (unicode) {
     const utf16buffer = Buffer.from(`\ufeff${converted}`, "utf16le");
     converted = new Uint8Array(utf16buffer);
@@ -65,7 +65,7 @@ async function convertQspFile(filePath, outputDirectory, unicode) {
 
 async function convertQspsFile(filePath, outputDirectory) {
   let { encoding } = await languageEncoding(filePath);
-  const data = await fs.readFile(path.resolve(filePath));
+  const data = await readFile(resolve(filePath));
   if (!encoding) {
     encoding = data[1] === 0 ? "utf-16le" : "utf-8";
   }
@@ -80,14 +80,16 @@ async function convertQspsFile(filePath, outputDirectory) {
 }
 
 async function writeFile(filePath, outputDirectory, outExtension, content) {
-  const ext = path.extname(filePath);
-  const basename = path.basename(filePath, ext);
-  const directory = path.dirname(filePath);
-  const targetDirectory = path.resolve(outputDirectory || directory);
-  const outPath = path.resolve(targetDirectory, basename + outExtension);
+  const ext = extname(filePath);
+  const basename = _basename(filePath, ext);
+  const directory = dirname(filePath);
+  const targetDirectory = outputDirectory ? resolve(outputDirectory, directory) : directory;
+  const outPath = resolve(targetDirectory, basename + outExtension);
 
-  await fs.mkdir(targetDirectory, { recursive: true });
-  await fs.writeFile(outPath, content);
+  await mkdir(targetDirectory, { recursive: true });
+  await _writeFile(outPath, content);
 
-  return `${outputDirectory || directory}/${basename}${outExtension}`;
+  return `${outputDirectory ? outputDirectory + "/" : ""}${
+    outputDirectory ? relative(resolve(outputDirectory), targetDirectory) : directory
+  }/${basename}${outExtension}`;
 }
