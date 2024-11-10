@@ -4,4 +4,4 @@
 .github/**/*
 .prettierignore
 .prettierrc.json
-.eslintrc.js
+.eslint.config.mjs
