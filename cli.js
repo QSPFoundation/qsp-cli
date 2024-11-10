@@ -1,4 +1,3 @@
-/* eslint-disable no-process-exit */
 import { program } from "commander";
 import { sync } from "glob";
 import { extname, resolve, basename as _basename, dirname, relative } from "path";

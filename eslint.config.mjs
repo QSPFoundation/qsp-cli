@@ -13,11 +13,11 @@ const compat = new FlatCompat({
 });
 
 export default [
-    ...compat.extends("eslint:recommended", "plugin:node/recommended", "prettier"),
+    ...compat.extends("eslint:recommended", "prettier"),
     {
         languageOptions: {
             globals: {
-                ...globals.browser,
+                ...globals.node,
                 ...globals.commonjs,
             },
 
