@@ -5,7 +5,7 @@
   "description": "CLI tools for QSP",
   "main": "cli.js",
   "bin": {
-    "qsp-cli": "./bin/run"
+    "qsp-cli": "./bin/run.js"
   },
   "engines": {
     "node": ">=18"
